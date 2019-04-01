@@ -110,20 +110,29 @@ app.post("/api/product/", (req, res, next) => {
 });
 
 // update to user 
-app.patch("/api/user/:id", (req, res, next) => {
+app.put("/api/store/:id", (req, res, next) => {
     var data = {
         name: req.body.name,
-        email: req.body.email,
-        password : req.body.password ? md5(req.body.password) : null
+        hint: req.body.hint,
+        quantity : req.body.quantity,
+        priceTotal : req.body.priceTotal,
+        TradepriceTotal : req.body.TradepriceTotal,
+        priceForPicese : req.body.priceForPicese,
+        TradePricePicese : req.body.TradePricePicese
     }
     db.run(
-        `UPDATE user set 
+        `UPDATE products set 
            name = COALESCE(?,name), 
-           email = COALESCE(?,email), 
-           password = COALESCE(?,password) 
+           hint = COALESCE(?,hint), 
+           quantity = COALESCE(?,quantity), 
+           priceTotal = COALESCE(?,priceTotal), 
+           TradepriceTotal = COALESCE(?,TradepriceTotal), 
+           priceForPicese = COALESCE(?,priceForPicese), 
+           TradePricePicese = COALESCE(?,TradePricePicese) 
            WHERE id = ?`,
-        [data.name, data.email, data.password, req.params.id],
+        [data.name, data.hint, data.quantity , data.priceTotal , data.TradepriceTotal , data.priceForPicese , data.TradePricePicese, req.params.id],
         function (err, result) {
+            console.log("4444")
             if (err){
                 res.status(400).json({"error": res.message})
                 return;
@@ -137,17 +146,19 @@ app.patch("/api/user/:id", (req, res, next) => {
 });
 
 // delete user by id  
-app.delete("/api/user/:id", (req, res, next) => {
+app.delete("/api/store/product/:id", (req, res, next) => {
     db.run(
-        'DELETE FROM user WHERE id = ?',
+        'DELETE FROM products WHERE id = ?',
         req.params.id,
         function (err, result) {
+
             if (err){
                 res.status(400).json({"error": res.message})
                 return;
             }
             res.json({"message":"deleted", changes: this.changes})
     });
+
 });
 
 // Default response for any other request

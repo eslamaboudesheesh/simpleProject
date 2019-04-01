@@ -6,9 +6,10 @@ import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+import { NotificationModule } from '@progress/kendo-angular-notification';
 
 
-import { GridModule } from '@progress/kendo-angular-grid';
+import { GridModule , ExcelModule ,PDFModule } from '@progress/kendo-angular-grid';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 import { AppComponent } from './app.component';
@@ -47,7 +48,10 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     DateInputsModule,
     FormsModule,
-    InputsModule
+    InputsModule,
+    ExcelModule,
+    PDFModule,
+    NotificationModule
 
   ]
 })

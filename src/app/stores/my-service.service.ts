@@ -4,6 +4,7 @@ import { catchError } from 'rxjs/operators/catchError';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { map } from 'rxjs/operators';
+import { DataResponse } from './models/dataresponse.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,18 +20,29 @@ public GetAgents() {
   );
 }
 
+/**
+ * add productes
+ */
+public Addproductes( DataResponse : DataResponse) {
+  return this.http.post("http://localhost:8000/api/product/", DataResponse).pipe(map (res => {
+    return res;
+  }))  
+}
 
-// public AddUpdateAgent(agnentViewModel : AgentViewModel) {
-//   return this.http.post(this.serviceURL+ "/PostAgent" , agnentViewModel).pipe(map(res=>{
-//     return res ;
-//   }))
-//   }
 
-//    // deleted agent
+
+public UpdateProject(DataResponse : DataResponse  ) {
+return this.http.put(`http://localhost:8000/api/store/${DataResponse.id}` , DataResponse).pipe(map(res=>{
+  return res;
+}))
+}
+
+
+   // deleted agent
    
-//    public DeletedAgent(id:number) {
-//      return this.http.post(this.serviceURL+ `DeleteAgent?ID=${id}`,{}).pipe(map(res=>{
-//        return res;
-//      }))
-//    }
+   public DeletedProject(id:number) {
+     return this.http.delete(`http://localhost:8000/api/store/product/${id}`,{}).pipe(map(res=>{
+       return res;
+     }))
+   }
 }
