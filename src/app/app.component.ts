@@ -110,7 +110,7 @@ export class AppComponent implements OnInit {
     }
 
     loadItems(projectsResult: any) {
-        
+
         this.gridData = process(projectsResult, this.state);
         this.loading = false;
     }
@@ -132,7 +132,7 @@ export class AppComponent implements OnInit {
         this.dialogOpened = false;
     }
     open() {
-
+        this.selectedObj = new DataResponse();
         this.Dialogheader = "Add Product";
         this.addModeDialoge = true;
         this.dialogOpened = true;

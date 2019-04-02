@@ -25,13 +25,13 @@
                 <kendo-grid-column field="quantity" title="quantity" width="100" filter="date" format="{0:d}"
                     [filterable]="false" [sortable]="true">
                 </kendo-grid-column>
-                <kendo-grid-column field="TradePricePicese" title="price for pices" width="120" filter="numeric"
+                <kendo-grid-column field="TradePricePicese" title="TradePricePicese" width="120" filter="numeric"
                     format="{0:c}" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
                         <span>{{ dataItem.TradePricePicese}} LE</span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="TradepriceTotal" title="total tradePrice" width="180" [filterable]="false">
+                <kendo-grid-column field="TradepriceTotal" title="total tradePrice" width="180" [filterable]="false"  [style]="{'background-color': '#888','color': '#fff'}">
                     <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
                         <span>{{dataItem.quantity * dataItem.TradePricePicese}} LE</span>
                     </ng-template>
@@ -42,7 +42,7 @@
                         <span>{{ dataItem.priceForPicese}} LE</span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="priceTotal" title="total tradePrice" [filterable]="false" width="180">
+                <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="180"  [style]="{'background-color': '#888','color': '#fff'}">
                     <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
                         <span>{{dataItem.quantity * dataItem.priceForPicese}} LE</span>
                     </ng-template>
@@ -96,15 +96,15 @@
                         <label class="k-form-field">
                             <span> Name</span>
                             <input kendoTextBox name="name" placeholder="Add name" [(ngModel)]="selectedObj.name"
-                                class="k-textbox addnameInput" />
+                                class="k-textbox addnameInput"  required/>
                         </label>
                     </kendo-textbox-container>
 
                     <kendo-textbox-container class="k-textbox-container col-lg-7">
                         <label class="k-form-field">
                             <span> hint</span>
-                            <input kendoTextBox name="priceForPicese" placeholder="Add Description"
-                                [(ngModel)]="selectedObj.hint" class="k-textbox addnameInput" />
+                            <input kendoTextBox name="hint" placeholder="Add Description"
+                                [(ngModel)]="selectedObj.hint" class="k-textbox addnameInput" required />
                         </label>
                     </kendo-textbox-container>
 
@@ -142,66 +142,55 @@
 
         <div *ngIf="!addModeDialoge">
            
-            <div class="col-xs-12 col-sm-6 example-col">
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> Name</span>
-                        <input kendoTextBox name="name" placeholder="Add Project" [(ngModel)]="selectedObj.name"
-                            class="k-textbox addnameInput" />
-                    </label>
-                </kendo-textbox-container>
-
-
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> hint</span>
-                        <input kendoTextBox name="priceForPicese" placeholder="Add Project"
-                            [(ngModel)]="selectedObj.hint" class="k-textbox addnameInput" />
-                    </label>
-                </kendo-textbox-container>
-
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> TradePricePicese</span>
-                        <input kendoTextBox name="TradePricePicese" placeholder="Add Project"
-                            [(ngModel)]="selectedObj.TradePricePicese" class="k-textbox addnameInput" />
-                    </label>
-                </kendo-textbox-container>
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> quantity</span>
-                        <input kendoTextBox name="quantity" placeholder="Add Project" [(ngModel)]="selectedObj.quantity"
-                            class="k-textbox addnameInput" />
-                    </label>
-                </kendo-textbox-container>
-
-
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> TradepriceTotal</span>
-                        <input kendoTextBox name="TradepriceTotal" placeholder="Add Project"
-                            [(ngModel)]="selectedObj.TradepriceTotal" class="k-textbox addnameInput" disabled />
-                    </label>
-                </kendo-textbox-container>
-
-
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> priceForPicese</span>
-                        <input kendoTextBox name="priceForPicese" placeholder="Add Project"
-                            [(ngModel)]="selectedObj.priceForPicese" class="k-textbox addnameInput" />
-                    </label>
-                </kendo-textbox-container>
-
-                <kendo-textbox-container class="k-textbox-container">
-                    <label class="k-form-field">
-                        <span> priceTotal</span>
-                        <input kendoTextBox name="priceTotal" placeholder="Add Project"
-                            [(ngModel)]="selectedObj.priceTotal" class="k-textbox addnameInput" disabled />
-                    </label>
-                </kendo-textbox-container>
-
-            </div>
+                <div class=" example-col">
+                
+                        <div class="row">
+        
+                            <kendo-textbox-container class="k-textbox-container col-lg-5">
+                                <label class="k-form-field">
+                                    <span> Name</span>
+                                    <input kendoTextBox name="name" placeholder="Add name" [(ngModel)]="selectedObj.name"
+                                        class="k-textbox addnameInput" required/>
+                                </label>
+                            </kendo-textbox-container>
+        
+                            <kendo-textbox-container class="k-textbox-container col-lg-7">
+                                <label class="k-form-field">
+                                    <span> hint</span>
+                                    <input kendoTextBox name="hint" placeholder="Add Description"
+                                        [(ngModel)]="selectedObj.hint" class="k-textbox addnameInput" required  />
+                                </label>
+                            </kendo-textbox-container>
+        
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label for="quantity">quantity</label>
+                                <kendo-numerictextbox [format]="'n'" id="quantity" name="quantity" [min]="1" [step]="1"
+                                    placeholder="quantity" [value]="selectedObj.quantity" required
+                                    [(ngModel)]="selectedObj.quantity">
+                                </kendo-numerictextbox>
+                            </div>
+        
+                            <div class="col-lg-4">
+                                <label for="TradePricePicese">TradePricePicese</label>
+                                <kendo-numerictextbox [format]="'n'" id="TradePricePicese" name="TradePricePicese" [min]="1"
+                                    [step]="1" placeholder="TradePricePicese" required
+                                    [(ngModel)]="selectedObj.TradePricePicese" [value]="selectedObj.TradePricePicese">
+                                </kendo-numerictextbox>
+                            </div>
+        
+                            <div class="col-lg-4">
+                                <label for="priceForPicese">priceForPicese</label>
+                                <kendo-numerictextbox [format]="'n'" id="priceForPicese" name="priceForPicese" [min]="1"
+                                    [value]="selectedObj.priceForPicese" [step]="1" placeholder="priceForPicese" required
+                                    [(ngModel)]="selectedObj.priceForPicese">
+                                </kendo-numerictextbox>
+                            </div>
+                        </div>
+        
+                    </div>
         </div>
 
 

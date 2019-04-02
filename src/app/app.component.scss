@@ -1,10 +1,10 @@
 
 .submitted{
-    input.ng-invalid{
-       border: 1px solid red !important;
-     }
+    input.ng-invalid ,select.ng-invalid, kendo-combobox.ng-invalid, kendo-multiselect.ng-invalid , kendo-numerictextbox.ng-invalid,kendo-datepicker.ng-invalid,kendo-maskedtextbox.ng-invalid ,kendo-timepicker.ng-invalid , 
+    nb-checkbox .customised-control-input:checked ~ .customised-control-indicator{
+    border: 1px solid red !important;
  }
- 
+}
      .k-i-loading {
          position: absolute;
          top: 0;
