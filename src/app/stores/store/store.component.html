@@ -1,3 +1,211 @@
-<p>
-  store works!
-</p>
+<router-outlet></router-outlet>
+
+<div id="dashboard" style="max-width:1024px; width:100%; margin:0 auto;">
+
+    <div class="flexcon" style=" margin-bottom:1.5rem;display:flex; flex-direction:row; justify-content: center; ">
+
+        <div class="chart-grid" style=" flex-grow: 1;display: flex;justify-content: center; margin-Top: '20px';">
+
+            <kendo-grid [data]="gridData" [pageSize]="state.take" [skip]="state.skip" [sort]="state.sort"
+                [filter]="state.filter" [sortable]="true" [pageable]="true" [filterable]="true"
+                (dataStateChange)="dataStateChange($event)">
+
+                <ng-template kendoGridToolbarTemplate [position]="'top'" style="bakground-color:yellow !important">
+                    <div class="grid-header-content" style="position: relative;">
+                        <h5 style="color:#066980">ALL Products</h5>
+                        <button type="button" kendoGridExcelCommand icon="file-excel">Export to Excel</button>
+                        <button kendoGridPDFCommand icon="file-pdf">Export to PDF</button>
+                        <button class="btn button-add" (click)="open()"> add + </button>
+                    </div>
+                </ng-template>
+                <kendo-grid-column field="id" title="ID" width="40" [sortable]="true" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="name" title="product name" width="180" [filterable]="true">
+                </kendo-grid-column>
+                <kendo-grid-column field="hint" title="productDescription" width="180" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="quantity" title="quantity" width="100" filter="date" format="{0:d}"
+                    [filterable]="false" [sortable]="true">
+                </kendo-grid-column>
+                <kendo-grid-column field="TradePricePicese" title="TradePricePicese" width="120" filter="numeric"
+                    format="{0:c}" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <span>{{ dataItem.TradePricePicese}} LE</span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="TradepriceTotal" title="total tradePrice" width="180" [filterable]="false"  [style]="{'background-color': '#888','color': '#fff'}">
+                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <span>{{dataItem.quantity * dataItem.TradePricePicese}} LE</span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="priceForPicese" title="price for pices" width="120" filter="numeric"
+                    format="{0:c}" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <span>{{ dataItem.priceForPicese}} LE</span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="180"  [style]="{'background-color': '#888','color': '#fff'}">
+                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <span>{{dataItem.quantity * dataItem.priceForPicese}} LE</span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="Actions" [filterable]="false" [sortable]="false" width="80">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i class="k-icon k-i-pencil" style="cursor: pointer ; color: #aed524 ; margin-right: 20px"
+                            title="Edit Request/Quotation" (click)="editOpen(dataItem)"></i>
+                        <i class="k-icon k-i-close-circle " style="cursor: pointer ; color: red" title="Delete Request"
+                            (click)="DeletedProduct(dataItem.id)"></i>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-excel fileName="Products.xlsx"></kendo-grid-excel>
+                <kendo-grid-pdf fileName="Products.pdf" [allPages]="true" paperSize="Tabloid" [repeatHeaders]="true"
+                    [landscape]="true">
+                    <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                    <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                        <div class="page-template">
+                            <div class="header">
+                                <div style="float: right">Page {{ pageNum }} of {{ totalPages }}</div>
+                                Multi-page grid with automatic page breaking
+                            </div>
+                            <div class="footer">
+                                Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                        </div>
+                    </ng-template>
+                </kendo-grid-pdf>
+
+            </kendo-grid>
+
+            <div *ngIf="loading" class="k-i-loading"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<kendo-dialog [title]=Dialogheader *ngIf="dialogOpened" (close)="close()" [minWidth]="250" [width]="555">
+    
+    <form #form="ngForm" [ngClass]="{submitted:isSubmit}" class="k-form frominput">
+
+        <div *ngIf="addModeDialoge">
+
+            <div class=" example-col">
+                
+                <div class="row">
+
+                    <kendo-textbox-container class="k-textbox-container col-lg-5">
+                        <label class="k-form-field">
+                            <span> Name</span>
+                            <input kendoTextBox name="name" placeholder="Add name" [(ngModel)]="selectedObj.name"
+                                class="k-textbox addnameInput"  required/>
+                        </label>
+                    </kendo-textbox-container>
+
+                    <kendo-textbox-container class="k-textbox-container col-lg-7">
+                        <label class="k-form-field">
+                            <span> hint</span>
+                            <input kendoTextBox name="hint" placeholder="Add Description"
+                                [(ngModel)]="selectedObj.hint" class="k-textbox addnameInput" required />
+                        </label>
+                    </kendo-textbox-container>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <label for="quantity">quantity</label>
+                        <kendo-numerictextbox [format]="'n'" id="quantity" name="quantity" [min]="1" [step]="1"
+                            placeholder="quantity" [value]="selectedObj.quantity" required
+                            [(ngModel)]="selectedObj.quantity">
+                        </kendo-numerictextbox>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label for="TradePricePicese">TradePricePicese</label>
+                        <kendo-numerictextbox [format]="'n'" id="TradePricePicese" name="TradePricePicese" [min]="1"
+                            [step]="1" placeholder="TradePricePicese" required
+                            [(ngModel)]="selectedObj.TradePricePicese" [value]="selectedObj.TradePricePicese">
+                        </kendo-numerictextbox>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label for="priceForPicese">priceForPicese</label>
+                        <kendo-numerictextbox [format]="'n'" id="priceForPicese" name="priceForPicese" [min]="1"
+                            [value]="selectedObj.priceForPicese" [step]="1" placeholder="priceForPicese" required
+                            [(ngModel)]="selectedObj.priceForPicese">
+                        </kendo-numerictextbox>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div *ngIf="!addModeDialoge">
+           
+                <div class=" example-col">
+                
+                        <div class="row">
+        
+                            <kendo-textbox-container class="k-textbox-container col-lg-5">
+                                <label class="k-form-field">
+                                    <span> Name</span>
+                                    <input kendoTextBox name="name" placeholder="Add name" [(ngModel)]="selectedObj.name"
+                                        class="k-textbox addnameInput" required/>
+                                </label>
+                            </kendo-textbox-container>
+        
+                            <kendo-textbox-container class="k-textbox-container col-lg-7">
+                                <label class="k-form-field">
+                                    <span> hint</span>
+                                    <input kendoTextBox name="hint" placeholder="Add Description"
+                                        [(ngModel)]="selectedObj.hint" class="k-textbox addnameInput" required  />
+                                </label>
+                            </kendo-textbox-container>
+        
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <label for="quantity">quantity</label>
+                                <kendo-numerictextbox [format]="'n'" id="quantity" name="quantity" [min]="1" [step]="1"
+                                    placeholder="quantity" [value]="selectedObj.quantity" required
+                                    [(ngModel)]="selectedObj.quantity">
+                                </kendo-numerictextbox>
+                            </div>
+        
+                            <div class="col-lg-4">
+                                <label for="TradePricePicese">TradePricePicese</label>
+                                <kendo-numerictextbox [format]="'n'" id="TradePricePicese" name="TradePricePicese" [min]="1"
+                                    [step]="1" placeholder="TradePricePicese" required
+                                    [(ngModel)]="selectedObj.TradePricePicese" [value]="selectedObj.TradePricePicese">
+                                </kendo-numerictextbox>
+                            </div>
+        
+                            <div class="col-lg-4">
+                                <label for="priceForPicese">priceForPicese</label>
+                                <kendo-numerictextbox [format]="'n'" id="priceForPicese" name="priceForPicese" [min]="1"
+                                    [value]="selectedObj.priceForPicese" [step]="1" placeholder="priceForPicese" required
+                                    [(ngModel)]="selectedObj.priceForPicese">
+                                </kendo-numerictextbox>
+                            </div>
+                        </div>
+        
+                    </div>
+        </div>
+
+
+        <kendo-dialog-actions *ngIf="addModeDialoge">
+            <button kendoButton (click)="close()">Cancel</button>
+            <button kendoButton (click)="addProduct(form)" primary="true" type="submit">Save</button>
+        </kendo-dialog-actions>
+
+        <kendo-dialog-actions *ngIf="!addModeDialoge">
+            <button kendoButton (click)="close()">Cancel</button>
+            <button kendoButton (click)="updateproduct(form )" primary="true">Save</button>
+        </kendo-dialog-actions>
+
+    </form>
+
+</kendo-dialog>

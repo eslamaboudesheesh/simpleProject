@@ -18,41 +18,43 @@ import { StoreComponent } from './stores/store/store.component';
 import { StoresComponent } from './stores/stores.component';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { FormsModule } from '@angular/forms';
+import { StarthomeComponent } from './starthome/starthome.component';
 
 
 
 const routes: Routes = [
-  { path: 'stores', component: AppComponent },
+  { path: 'home', component: StarthomeComponent },
+  {path : 'stores' , component :StoreComponent} ,
   { path: '', redirectTo: 'stores', pathMatch: 'full' },
   { path: '**', redirectTo: 'stores' },
 ];
 
 @NgModule({
-  bootstrap: [
-    AppComponent
-  ],
-  declarations: [
-    AppComponent,
-    StoreComponent,
-    StoresComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    DialogsModule,
-    DialogModule,
-    ButtonsModule,
-    GridModule,
-    AngularFontAwesomeModule,
-    RouterModule.forRoot(routes),
-    DateInputsModule,
-    FormsModule,
-    InputsModule,
-    ExcelModule,
-    PDFModule,
-    NotificationModule
-
-  ]
+   bootstrap: [
+      AppComponent
+   ],
+   declarations: [
+      AppComponent,
+      StoreComponent,
+      StoresComponent,
+      StarthomeComponent
+   ],
+   imports: [
+      BrowserModule,
+      BrowserAnimationsModule,
+      HttpClientModule,
+      DialogsModule,
+      DialogModule,
+      ButtonsModule,
+      GridModule,
+      AngularFontAwesomeModule,
+      RouterModule.forRoot(routes),
+      DateInputsModule,
+      FormsModule,
+      InputsModule,
+      ExcelModule,
+      PDFModule,
+      NotificationModule
+   ]
 })
 export class AppModule { }

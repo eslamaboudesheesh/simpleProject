@@ -1,0 +1,52 @@
+
+.submitted{
+    input.ng-invalid ,select.ng-invalid, kendo-combobox.ng-invalid, kendo-multiselect.ng-invalid , kendo-numerictextbox.ng-invalid,kendo-datepicker.ng-invalid,kendo-maskedtextbox.ng-invalid ,kendo-timepicker.ng-invalid , 
+    nb-checkbox .customised-control-input:checked ~ .customised-control-indicator{
+    border: 1px solid red !important;
+ }
+}
+     .k-i-loading {
+         position: absolute;
+         top: 0;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         font-size: 64px;
+         background-color: rgba(255,255,255,.3);
+         color: #ff6757;
+       }
+ .frominput {
+     padding: 0px !important;
+ }
+ .addnameInput {
+     margin-bottom: 20px;
+ 
+ }
+ .k-textbox-container {
+     padding-top: 0px !important
+ }
+ .add-sponsor{
+    margin-top: 1.69rem; 
+    margin-left:-1.2rem;
+ }
+ .add-icon{
+    color:#aed524 ;  
+    cursor: pointer;
+  }
+  
+.button-add {
+    background-color: #aed524;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-bottom: 4px;
+    width: 70px;
+    border-radius: 50px;
+    height: 37px;
+}
+
+.button-notification {
+    padding: 10px 5px;
+    color: #313536;
+}
