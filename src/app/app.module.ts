@@ -19,14 +19,16 @@ import { StoresComponent } from './stores/stores.component';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { FormsModule } from '@angular/forms';
 import { StarthomeComponent } from './starthome/starthome.component';
+import { DaysaleComponent } from './stores/daysale/daysale.component';
 
 
 
 const routes: Routes = [
-  { path: 'home', component: StarthomeComponent },
+  { path: 'home', component: DaysaleComponent },
   {path : 'stores' , component :StoreComponent} ,
-  { path: '', redirectTo: 'stores', pathMatch: 'full' },
-  { path: '**', redirectTo: 'stores' },
+  {path: 'daysale' , component :DaysaleComponent},
+  { path: '', redirectTo: 'daysale', pathMatch: 'full' },
+  { path: '**', redirectTo: 'daysale' },
 ];
 
 @NgModule({
@@ -37,7 +39,8 @@ const routes: Routes = [
       AppComponent,
       StoreComponent,
       StoresComponent,
-      StarthomeComponent
+      StarthomeComponent,
+      DaysaleComponent 
    ],
    imports: [
       BrowserModule,

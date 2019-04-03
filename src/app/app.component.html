@@ -1,18 +1,29 @@
-<nav class="navbar navbar-default">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">WebSiteName</a>
-          </div>
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 1</a></li>
-            <li><a href="#">Page 2</a></li>
-            <li><a href="#">Page 3</a></li>
-          </ul>
-        </div>
-      </nav>
-       
+<header style="margin-bottom: 30px; height: 10px;">
+<div class="nav">
+  <div class="nav-header">
+    <div class="nav-title" routerLink="/home">
+      JStore
 
+    </div>
+  </div>
+  <div class="nav-btn">
+    <label for="nav-check">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+  </div>
+  <input type="checkbox" id="nav-check">
+  <div class="nav-links">
+    <a routerLink="/stores" routerLinkActive="active-link"> Store </a>
+    <a routerLink="/home" routerLinkActive="active-link">NewDay</a>
+    <a routerLink="/home" routerLinkActive="active-link">People</a>
+  </div>
+</div>
+</header>
 
+<div class="container"  >
 <router-outlet></router-outlet>
+</div>
 
+<footer>Store Project can find it in <a target="_blank" href="https://github.com/eslamaboudesheesh">github</a></footer>

@@ -18,7 +18,10 @@
                         <button class="btn button-add" (click)="open()"> add + </button>
                     </div>
                 </ng-template>
-                <kendo-grid-column field="id" title="ID" width="40" [sortable]="true" [filterable]="false">
+                <kendo-grid-column  title="ID" width="40" [sortable]="true" [filterable]="false">
+                        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                <span>{{rowIndex+1}}</span>                         
+                            </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="name" title="product name" width="180" [filterable]="true">
                 </kendo-grid-column>
