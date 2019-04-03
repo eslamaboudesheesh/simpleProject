@@ -11,14 +11,14 @@ app.use(bodyParser.json());
 app.use(cors())
 
 // Server port
-var HTTP_PORT = 8000 ;
+var HTTP_PORT = 8000;
 // Start server
 app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+    console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT))
 });
 // Root endpoint
 app.get("/", (req, res, next) => {
-    res.json({"message":"Ok"})
+    res.json({ "message": "Ok" })
 });
 
 // Insert here other API endpoints
@@ -27,14 +27,14 @@ app.get("/api/products", (req, res, next) => {
     var params = []
     db.all(sql, params, (err, rows) => {
         if (err) {
-          res.status(400).json({"error":err.message});
-          return;
+            res.status(400).json({ "error": err.message });
+            return;
         }
         res.json({
-            "message":"success",
-            "data":rows
+            "message": "success",
+            "data": rows
         })
-      });
+    });
 });
 
 
@@ -43,38 +43,38 @@ app.get("/api/product/:id", (req, res, next) => {
     var params = [req.params.id]
     db.get(sql, params, (err, row) => {
         if (err) {
-          res.status(400).json({"error":err.message});
-          return;
+            res.status(400).json({ "error": err.message });
+            return;
         }
         res.json({
-            "message":"success",
-            "data":row
+            "message": "success",
+            "data": row
         })
-      });
+    });
 });
 
 
 app.get("/api/product/search/:name", (req, res, next) => {
-  let SearchKey = '%' + req.params.name + '%';
-  var params = [SearchKey];
+    let SearchKey = '%' + req.params.name + '%';
+    var params = [SearchKey];
 
-  
-    
-     var sql = 'select * from  products   where name like ?';
-console.log(sql)
+
+
+    var sql = 'select * from  products   where name like ?';
+    console.log(sql)
 
     db.all(sql, params, (err, row) => {
         if (err) {
-          res.status(400).json({"error":err.message});
-          return;
+            res.status(400).json({ "error": err.message });
+            return;
         }
         res.json({
-            "message":"success",
-            "data":row
+            "message": "success",
+            "data": row
         })
-        
-        
-      });
+
+
+    });
 });
 
 
@@ -83,28 +83,28 @@ console.log(sql)
 
 // add user 
 app.post("/api/product/", (req, res, next) => {
-    var errors=[]
-  
+    var errors = []
+
     var data = {
         name: req.body.name,
         hint: req.body.hint,
-        quantity : req.body.quantity,
-        priceTotal : req.body.priceTotal,
-        TradepriceTotal : req.body.TradepriceTotal,
-        priceForPicese : req.body.priceForPicese,
-        TradePricePicese : req.body.TradePricePicese
+        quantity: req.body.quantity,
+        priceTotal: req.body.priceTotal,
+        TradepriceTotal: req.body.TradepriceTotal,
+        priceForPicese: req.body.priceForPicese,
+        TradePricePicese: req.body.TradePricePicese
     }
-    var sql ='INSERT INTO products (name, hint, quantity ,priceTotal ,TradepriceTotal ,priceForPicese ,TradePricePicese) VALUES (?,?,?,?,?,?,?)'
-    var params =[data.name, data.hint, data.quantity , data.priceTotal , data.TradepriceTotal , data.priceForPicese , data.TradePricePicese]
+    var sql = 'INSERT INTO products (name, hint, quantity ,priceTotal ,TradepriceTotal ,priceForPicese ,TradePricePicese) VALUES (?,?,?,?,?,?,?)'
+    var params = [data.name, data.hint, data.quantity, data.priceTotal, data.TradepriceTotal, data.priceForPicese, data.TradePricePicese]
     db.run(sql, params, function (err, result) {
-        if (err){
-            res.status(400).json({"error": err.message})
+        if (err) {
+            res.status(400).json({ "error": err.message })
             return;
         }
         res.json({
             "message": "success",
             "data": data,
-            "id" : this.lastID
+            "id": this.lastID
         })
     });
 });
@@ -114,11 +114,11 @@ app.put("/api/store/:id", (req, res, next) => {
     var data = {
         name: req.body.name,
         hint: req.body.hint,
-        quantity : req.body.quantity,
-        priceTotal : req.body.priceTotal,
-        TradepriceTotal : req.body.TradepriceTotal,
-        priceForPicese : req.body.priceForPicese,
-        TradePricePicese : req.body.TradePricePicese
+        quantity: req.body.quantity,
+        priceTotal: req.body.priceTotal,
+        TradepriceTotal: req.body.TradepriceTotal,
+        priceForPicese: req.body.priceForPicese,
+        TradePricePicese: req.body.TradePricePicese
     }
     db.run(
         `UPDATE products set 
@@ -130,11 +130,11 @@ app.put("/api/store/:id", (req, res, next) => {
            priceForPicese = COALESCE(?,priceForPicese), 
            TradePricePicese = COALESCE(?,TradePricePicese) 
            WHERE id = ?`,
-        [data.name, data.hint, data.quantity , data.priceTotal , data.TradepriceTotal , data.priceForPicese , data.TradePricePicese, req.params.id],
+        [data.name, data.hint, data.quantity, data.priceTotal, data.TradepriceTotal, data.priceForPicese, data.TradePricePicese, req.params.id],
         function (err, result) {
             console.log("4444")
-            if (err){
-                res.status(400).json({"error": res.message})
+            if (err) {
+                res.status(400).json({ "error": res.message })
                 return;
             }
             res.json({
@@ -142,7 +142,7 @@ app.put("/api/store/:id", (req, res, next) => {
                 data: data,
                 changes: this.changes
             })
-    });
+        });
 });
 
 // delete user by id  
@@ -152,17 +152,17 @@ app.delete("/api/store/product/:id", (req, res, next) => {
         req.params.id,
         function (err, result) {
 
-            if (err){
-                res.status(400).json({"error": res.message})
+            if (err) {
+                res.status(400).json({ "error": res.message })
                 return;
             }
-            res.json({"message":"deleted", changes: this.changes})
-    });
+            res.json({ "message": "deleted", changes: this.changes })
+        });
 
 });
 
 // Default response for any other request
-app.use(function(req, res){
+app.use(function (req, res) {
     res.status(404);
 });
 

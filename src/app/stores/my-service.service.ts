@@ -45,4 +45,10 @@ return this.http.put(`http://localhost:8000/api/store/${DataResponse.id}` , Data
        return res;
      }))
    }
+
+   public SearchProject(name:any){
+     return this.http.get(`http://localhost:8000/api/product/search/${name} `,{} ).pipe(map(res=>{
+       return res;
+     }))
+   }
 }
