@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { MyServiceService } from '../my-service.service';
 import { Subscription } from 'rxjs';
-import { State } from '@progress/kendo-data-query';
-import { GridDataResult } from '@progress/kendo-angular-grid';
+import { process, State } from '@progress/kendo-data-query';
+import { SelectableSettings } from '@progress/kendo-angular-grid';
+
+import { GridDataResult, DataStateChangeEvent } from '@progress/kendo-angular-grid';
 import { ResponseViewModel } from '../models/responsoModel';
 import { NotificationService } from '@progress/kendo-angular-notification';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-daysale',
@@ -15,12 +17,13 @@ import { NgForm } from '@angular/forms';
 
 export class DaysaleComponent implements OnInit, OnDestroy {
   valueSearch: any;
-  projectsResult : any ;
+  projectsResult: any;
   public isSubmit = false;
   public loading = false;
 
   public showTableSearch = false;
   public searchsubs: Subscription;
+  public mySelection: number[] = [];
   // Gridview variables
   public gridData: GridDataResult;
   public state: State = {
@@ -34,32 +37,53 @@ export class DaysaleComponent implements OnInit, OnDestroy {
     }
   };
 
-  constructor(private SearchProjectServ: MyServiceService, private notificationService: NotificationService) { }
+  constructor(private formBuilder: FormBuilder, private SearchProjectServ: MyServiceService, private notificationService: NotificationService) {
+  }
 
   ngOnInit() {
+
   }
+
 
   ngOnDestroy() {
     if (this.searchsubs)
       this.searchsubs.unsubscribe();
   }
 
+  public selectedCallback = (args) => args.dataItem;
+
+  //#region Gridview functions
+
+  public dataStateChange(state: DataStateChangeEvent): void {
+    this.state = state;
+    this.gridData = process(this.projectsResult, this.state);
+  }
+
+  loadItems(projectsResult: any) {
+
+    this.gridData = process(this.projectsResult, this.state);
+    this.loading = false;
+  }
+
+  //#endregion
 
 
 
 
   SearchProduct(form: NgForm) {
-    
+
     this.isSubmit = true;
     if (form.valid) {
       this.isSubmit = false;
       this.loading = true
       this.searchsubs = this.SearchProjectServ.SearchProject(this.valueSearch).subscribe((res: ResponseViewModel) => {
-         this.projectsResult = res.data.map((res) => {
-           return res ;
-         })
+        this.projectsResult = res.data.map((res) => {
+          return res;
+
+        })
         if ((res.message === "success") && (res.data.length > 0)) {
           this.showTableSearch = true;
+          this.loadItems(this.projectsResult);
 
           this.notificationService.show({
             content: 'Your data has been saved. Time for tea!',
@@ -92,11 +116,49 @@ export class DaysaleComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
-
   close() {
     this.showTableSearch = false;
 
   }
+
+  public cellClickHandler({ sender, rowIndex, columnIndex, dataItem }) {
+    sender.editCell(rowIndex, columnIndex, this.createFormGroup(dataItem));
+  }
+
+  public cellCloseHandler(args: any) {
+    debugger
+    const { formGroup, dataItem } = args;
+
+    if (!formGroup.valid) {
+      // prevent closing the edited cell if there are invalid values.
+      args.preventDefault();
+    } else if (formGroup.dirty) {
+
+      this.mySelection.map((pro: any) => {
+        if (pro.id === dataItem.id)
+          pro.quantity = formGroup.value.quantity;
+      })
+
+    }
+  }
+
+  public removeHandler({ sender, dataItem }) {
+
+    this.mySelection.map((product: any) => {
+      if (product.id === dataItem.id) {
+
+        let index = this.mySelection.indexOf(product);
+
+        this.mySelection.splice(index, 1);
+      }
+    })
+
+  }
+
+  public createFormGroup(dataItem: any): FormGroup {
+    return this.formBuilder.group({
+      'quantity': [dataItem.quantity, Validators.compose([Validators.required, Validators.pattern('^[0-9]{1,3}')])]
+    });
+  }
+
 }
