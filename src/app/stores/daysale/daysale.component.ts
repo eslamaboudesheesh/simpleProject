@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { MyServiceService } from '../my-service.service';
 import { Subscription } from 'rxjs';
 import { process, State } from '@progress/kendo-data-query';
-import { SelectableSettings } from '@progress/kendo-angular-grid';
+import { SelectableSettings, SelectionEvent, SelectAllCheckboxState } from '@progress/kendo-angular-grid';
 
 import { GridDataResult, DataStateChangeEvent } from '@progress/kendo-angular-grid';
 import { ResponseViewModel } from '../models/responsoModel';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { classToClass } from 'class-transformer';
 
 @Component({
   selector: 'app-daysale',
@@ -22,8 +23,9 @@ export class DaysaleComponent implements OnInit, OnDestroy {
   public loading = false;
 
   public showTableSearch = false;
+  public idisabled = true;
   public searchsubs: Subscription;
-  public mySelection: number[] = [];
+  public mySelection: any = [];
   // Gridview variables
   public gridData: GridDataResult;
   public state: State = {
@@ -36,6 +38,8 @@ export class DaysaleComponent implements OnInit, OnDestroy {
       filters: [{ field: 'name', operator: 'contains', value: '' }]
     }
   };
+
+  public selectAllState: SelectAllCheckboxState = 'unchecked';
 
   constructor(private formBuilder: FormBuilder, private SearchProjectServ: MyServiceService, private notificationService: NotificationService) {
   }
@@ -50,7 +54,71 @@ export class DaysaleComponent implements OnInit, OnDestroy {
       this.searchsubs.unsubscribe();
   }
 
-  public selectedCallback = (args) => args.dataItem;
+  public onSelectedRowChange(ev: SelectionEvent) {
+
+    let productsList: any = [];
+
+    if (ev.selected) {
+
+      productsList = classToClass(ev.selectedRows);
+
+      productsList.forEach(element => {
+
+        element.dataItem.quantity = 1;
+
+        if (!this.mySelection.some((item: any) => item.id === ev.selectedRows[0].dataItem.id)) {
+
+          this.notificationService.show({
+            content: 'this product is added successfully',
+            cssClass: 'button-notification',
+            animation: { type: 'slide', duration: 2000 },
+            position: { horizontal: 'center', vertical: 'bottom' },
+            type: { style: 'success', icon: true },
+            closable: true
+          });
+
+          this.mySelection.push(element.dataItem);
+
+         this.gridData.data = this.gridData.data.filter(obj => {
+           return obj.id != element.dataItem.id
+          });
+
+        } else {
+          this.notificationService.show({
+            content: 'this product is added before, please add another one',
+            cssClass: 'button-notification',
+            animation: { type: 'slide', duration: 2000 },
+            position: { horizontal: 'center', vertical: 'bottom' },
+            type: { style: 'success', icon: true },
+            closable: true
+          });
+        }
+
+      });
+    } else {
+      this.notificationService.show({
+        content: 'this product is deleted successfully',
+        cssClass: 'button-notification',
+        animation: { type: 'slide', duration: 2000 },
+        position: { horizontal: 'center', vertical: 'bottom' },
+        type: { style: 'success', icon: true },
+        closable: true
+      });
+      this.mySelection.splice(this.mySelection.indexOf(ev.deselectedRows[0].dataItem), 1);
+    }
+
+
+  }
+
+
+
+  public onSelectedKeysChange(e) {
+
+    const len = this.mySelection.length;
+
+  }
+
+  // public selectedCallback = (args) => args.dataItem;
 
   //#region Gridview functions
 
@@ -84,16 +152,6 @@ export class DaysaleComponent implements OnInit, OnDestroy {
         if ((res.message === "success") && (res.data.length > 0)) {
           this.showTableSearch = true;
           this.loadItems(this.projectsResult);
-
-          this.notificationService.show({
-            content: 'Your data has been saved. Time for tea!',
-            cssClass: 'button-notification',
-            animation: { type: 'slide', duration: 400 },
-            position: { horizontal: 'center', vertical: 'bottom' },
-            type: { style: 'success', icon: true },
-            closable: true
-          });
-
         } else {
 
           this.notificationService.show({
@@ -116,6 +174,13 @@ export class DaysaleComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  savebilling() {
+
+    this.showTableSearch = false;
+    console.log(this.mySelection, "all Data in selection");
+  }
+
   close() {
     this.showTableSearch = false;
 
@@ -128,6 +193,27 @@ export class DaysaleComponent implements OnInit, OnDestroy {
   public cellCloseHandler(args: any) {
     debugger
     const { formGroup, dataItem } = args;
+
+    let oldQTY: number;
+
+    this.gridData.data.map((element => {
+      if (element.id === dataItem.id)
+        oldQTY = element.quantity;
+    }))
+
+    let newQTY = formGroup.value.quantity;
+
+    if (newQTY > oldQTY) {
+      this.notificationService.show({
+        content: `quantity must be less than ${oldQTY}`,
+        cssClass: 'button-notification',
+        animation: { type: 'slide', duration: 400 },
+        position: { horizontal: 'center', vertical: 'bottom' },
+        type: { style: 'error', icon: true },
+        closable: true
+      });
+      return
+    }
 
     if (!formGroup.valid) {
       // prevent closing the edited cell if there are invalid values.

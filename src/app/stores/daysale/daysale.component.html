@@ -21,7 +21,7 @@
 
   <kendo-grid [data]="gridData" [pageSize]="state.take" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
     [sortable]="true" [pageable]="true" [filterable]="true" [selectable]="true"
-    (dataStateChange)="dataStateChange($event)" [kendoGridSelectBy]="selectedCallback" [selectedKeys]="mySelection">
+    (dataStateChange)="dataStateChange($event)" (selectionChange)="onSelectedRowChange($event)">
 
     <kendo-grid-checkbox-column showSelectAll="true" width="50"></kendo-grid-checkbox-column>
 
@@ -75,14 +75,17 @@
     </div>
   </header>
 </div>
-<section class="for-reset--search" style="position: relative;"> 
-  
-  <kendo-grid [data]="mySelection" 
-              [height]="410"
-              (cellClick)="cellClickHandler($event)"
-              (cellClose)="cellCloseHandler($event)"
-              (remove)="removeHandler($event)"
-              [navigable]="true">
+<section class="for-reset--search" style="position: relative;display: block;height: 35pc;">
+
+  <kendo-grid [data]="mySelection" [height]="410" (cellClick)="cellClickHandler($event)"
+    (cellClose)="cellCloseHandler($event)" (remove)="removeHandler($event)" [navigable]="true">
+
+    <kendo-grid-command-column title=" " width="40">
+      <ng-template kendoGridCellTemplate let-isNew="isNew">
+        <button kendoGridRemoveCommand class="btn btn-danger"
+          style="  width: 25px;  padding: 0; margin-left: -5px;">x</button>
+      </ng-template>
+    </kendo-grid-command-column>
 
     <kendo-grid-column title="ID" width="40" [sortable]="true" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
@@ -120,11 +123,7 @@
         <span>{{dataItem.quantity * dataItem.priceForPicese}} LE</span>
       </ng-template>
     </kendo-grid-column>
-    <kendo-grid-command-column title="command" width="220">
-        <ng-template kendoGridCellTemplate let-isNew="isNew">
-            <button kendoGridRemoveCommand>Remove</button>
-        </ng-template>
-    </kendo-grid-command-column>
+
   </kendo-grid>
-  <button class="btn btn-defualt"> Save Billing </button>
+  <button class="btn btn-success" style=" float: right;margin-top: 20px;"  (click)="savebilling()" [disabled]="idisabled"> Save Billing </button>
 </section>
