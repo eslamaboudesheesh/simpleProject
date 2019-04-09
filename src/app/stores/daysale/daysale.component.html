@@ -14,7 +14,7 @@
 
 
 
-<section class="for-result--search" style="    position: relative;" *ngIf="showTableSearch">
+<section class="for-result--search" style="position: relative;" *ngIf="showTableSearch">
   <button (click)="close()" *ngIf="showTableSearch" class="btn btn-danger"
     style=" position: absolute;z-index: 999;  top: -26px; right: 0;     padding: 0px;  width: 25px;  height: 25px;">
     X</button>
@@ -23,7 +23,16 @@
     [sortable]="true" [pageable]="true" [filterable]="true" [selectable]="true"
     (dataStateChange)="dataStateChange($event)" (selectionChange)="onSelectedRowChange($event)">
 
-    <kendo-grid-checkbox-column showSelectAll="true" width="50"></kendo-grid-checkbox-column>
+    <!-- <kendo-grid-checkbox-column showSelectAll="true" width="40"></kendo-grid-checkbox-column> -->
+
+<!-- <kendo-grid-checkbox-column>
+                <ng-template kendoGridHeaderTemplate>
+                    <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
+                        [state]="selectAllState"
+                        (selectAllChange)="onSelectAllChange($event)">
+                    <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                </ng-template>
+            </kendo-grid-checkbox-column> -->
 
     <kendo-grid-column title="ID" width="40" [sortable]="true" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
@@ -55,7 +64,7 @@
         <span>{{ dataItem.priceForPicese}} LE</span>
       </ng-template>
     </kendo-grid-column>
-    <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="180"
+    <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="100"
       [style]="{'background-color': '#888','color': '#fff'}">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
         <span>{{dataItem.quantity * dataItem.priceForPicese}} LE</span>
@@ -64,11 +73,12 @@
 
   </kendo-grid>
   <div *ngIf="loading" class="k-i-loading"></div>
-
+  <br>
+  
 </section>
 
 
-<div style="position:relative; height: 120px; margin-bottom: 20px">
+<div style="position:relative; height: 80px; margin-bottom: 10px">
   <header class="header-reset">
     <div>
       <h5>Billing for product</h5>
@@ -117,7 +127,7 @@
         <span>{{ dataItem.priceForPicese}} LE</span>
       </ng-template>
     </kendo-grid-column>
-    <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="180"
+    <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="100"
       [style]="{'background-color': '#888','color': '#fff'}">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
         <span>{{dataItem.quantity * dataItem.priceForPicese}} LE</span>

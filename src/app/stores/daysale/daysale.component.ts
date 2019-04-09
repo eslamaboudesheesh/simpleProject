@@ -18,10 +18,10 @@ import { classToClass } from 'class-transformer';
 
 export class DaysaleComponent implements OnInit, OnDestroy {
   valueSearch: any;
-  projectsResult: any;
+  projectsResult: any = [];
   public isSubmit = false;
   public loading = false;
-
+  private hideAfter: number = 4000;
   public showTableSearch = false;
   public idisabled = true;
   public searchsubs: Subscription;
@@ -71,52 +71,67 @@ export class DaysaleComponent implements OnInit, OnDestroy {
           this.notificationService.show({
             content: 'this product is added successfully',
             cssClass: 'button-notification',
-            animation: { type: 'slide', duration: 2000 },
+            animation: { type: 'fade', duration: 200 },
             position: { horizontal: 'center', vertical: 'bottom' },
             type: { style: 'success', icon: true },
-            closable: true
+            hideAfter: this.hideAfter
           });
 
           this.mySelection.push(element.dataItem);
 
-         this.gridData.data = this.gridData.data.filter(obj => {
-           return obj.id != element.dataItem.id
-          });
+
+
 
         } else {
           this.notificationService.show({
             content: 'this product is added before, please add another one',
             cssClass: 'button-notification',
-            animation: { type: 'slide', duration: 2000 },
+            animation: { type: 'fade', duration: 200 },
             position: { horizontal: 'center', vertical: 'bottom' },
             type: { style: 'success', icon: true },
-            closable: true
+            hideAfter: this.hideAfter
           });
         }
 
       });
-    } else {
+
+    }
+    else {
+
       this.notificationService.show({
         content: 'this product is deleted successfully',
         cssClass: 'button-notification',
-        animation: { type: 'slide', duration: 2000 },
+        animation: { type: 'fade', duration: 200 },
         position: { horizontal: 'center', vertical: 'bottom' },
         type: { style: 'success', icon: true },
-        closable: true
+        hideAfter: this.hideAfter
       });
+
       this.mySelection.splice(this.mySelection.indexOf(ev.deselectedRows[0].dataItem), 1);
+
+    }
+
+    if ((this.gridData.data.length) === 0) {
+      this.showTableSearch = false;
+    }
+
+    if ((this.mySelection.length) > 0) {
+      this.idisabled = false;
     }
 
 
   }
 
+  //   public onSelectAllChange(checkedState: SelectAllCheckboxState) {
 
-
-  public onSelectedKeysChange(e) {
-
-    const len = this.mySelection.length;
-
-  }
+  //     if (checkedState === 'checked') {
+  //         this.mySelection = this.gridData.data.map((item) => item);
+  //         this.selectAllState = 'checked';
+  //     } else {
+  //         this.mySelection = [];
+  //         this.selectAllState = 'unchecked';
+  //     }
+  // }
 
   // public selectedCallback = (args) => args.dataItem;
 
@@ -129,14 +144,26 @@ export class DaysaleComponent implements OnInit, OnDestroy {
 
   loadItems(projectsResult: any) {
 
-    this.gridData = process(this.projectsResult, this.state);
+    this.gridData = process(projectsResult, this.state);
     this.loading = false;
+
+    if (projectsResult.length == 0) {
+
+      this.notificationService.show({
+        content: 'this data from search result added before in bill table',
+        cssClass: 'button-notification',
+        animation: { type: 'fade', duration: 400 },
+        position: { horizontal: 'right', vertical: 'top' },
+        type: { style: 'warning', icon: true },
+        hideAfter: this.hideAfter
+      });
+
+      this.showTableSearch = false;
+
+    }
   }
 
   //#endregion
-
-
-
 
   SearchProduct(form: NgForm) {
 
@@ -147,11 +174,25 @@ export class DaysaleComponent implements OnInit, OnDestroy {
       this.searchsubs = this.SearchProjectServ.SearchProject(this.valueSearch).subscribe((res: ResponseViewModel) => {
         this.projectsResult = res.data.map((res) => {
           return res;
-
         })
         if ((res.message === "success") && (res.data.length > 0)) {
+
           this.showTableSearch = true;
-          this.loadItems(this.projectsResult);
+
+          let newList: any = [];
+
+          if (this.mySelection.length > 0) {
+            this.projectsResult.forEach((obj: any) => {
+              if (!this.mySelection.some((item: any) => item.id === obj.id))
+                newList.push(obj);
+            });
+            this.loadItems(newList);
+          } else {
+            this.loadItems(this.projectsResult);
+          }
+
+
+
         } else {
 
           this.notificationService.show({
@@ -162,6 +203,8 @@ export class DaysaleComponent implements OnInit, OnDestroy {
             type: { style: 'error', icon: true },
             closable: true
           });
+
+          this.showTableSearch = false;
 
         }
         this.valueSearch = "";
@@ -190,15 +233,20 @@ export class DaysaleComponent implements OnInit, OnDestroy {
     sender.editCell(rowIndex, columnIndex, this.createFormGroup(dataItem));
   }
 
+  public xxdata = []
   public cellCloseHandler(args: any) {
     debugger
     const { formGroup, dataItem } = args;
 
     let oldQTY: number;
-
-    this.gridData.data.map((element => {
-      if (element.id === dataItem.id)
-        oldQTY = element.quantity;
+console.log(this.xxdata);
+this.xxdata.push(this.gridData.data);
+   this.xxdata.map((element => {
+     element.map((e)=>{
+      if (e.id === e.id)
+      oldQTY = e.quantity;
+     })
+     
     }))
 
     let newQTY = formGroup.value.quantity;
@@ -239,9 +287,15 @@ export class DaysaleComponent implements OnInit, OnDestroy {
       }
     })
 
+    if ((this.mySelection.length) == 0) {
+      this.idisabled = true;
+    }
+
+
   }
 
   public createFormGroup(dataItem: any): FormGroup {
+   
     return this.formBuilder.group({
       'quantity': [dataItem.quantity, Validators.compose([Validators.required, Validators.pattern('^[0-9]{1,3}')])]
     });
