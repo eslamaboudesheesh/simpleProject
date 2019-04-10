@@ -41,6 +41,8 @@ export class DaysaleComponent implements OnInit, OnDestroy {
 
   public selectAllState: SelectAllCheckboxState = 'unchecked';
 
+  public calculatedPrice: number = 1;
+
   constructor(private formBuilder: FormBuilder, private SearchProjectServ: MyServiceService, private notificationService: NotificationService) {
   }
 
@@ -58,39 +60,41 @@ export class DaysaleComponent implements OnInit, OnDestroy {
 
     let cloneSelectedProduct: any;
 
-if(selectedRow != null){
+    if (selectedRow != null) {
 
-  cloneSelectedProduct = classToClass(selectedRow);
+      cloneSelectedProduct = classToClass(selectedRow);
 
-  if (!this.mySelection.some((item: any) => item.id === cloneSelectedProduct.id)) {
+      if (!this.mySelection.some((item: any) => item.id === cloneSelectedProduct.id)) {
 
-    this.notificationService.show({
-      content: 'this product is added successfully',
-      cssClass: 'button-notification',
-      animation: { type: 'fade', duration: 200 },
-      position: { horizontal: 'center', vertical: 'bottom' },
-      type: { style: 'success', icon: true },
-      hideAfter: this.hideAfter
-    });
+        this.notificationService.show({
+          content: 'this product is added successfully',
+          cssClass: 'button-notification',
+          animation: { type: 'fade', duration: 200 },
+          position: { horizontal: 'center', vertical: 'bottom' },
+          type: { style: 'success', icon: true },
+          hideAfter: this.hideAfter
+        });
 
-    this.mySelection.push(cloneSelectedProduct);
+        cloneSelectedProduct.quantityForSale = 1
+        this.calculatedPrice = Number(cloneSelectedProduct.priceForPicese * 1);
+        this.mySelection.push(cloneSelectedProduct);
 
-    this.gridData.data = this.gridData.data.filter(obj => {
-      return obj.id != cloneSelectedProduct.id
-     });
+        this.gridData.data = this.gridData.data.filter(obj => {
+          return obj.id != cloneSelectedProduct.id
+        });
 
 
-  } else {
-    this.notificationService.show({
-      content: 'this product is added before, please add another one',
-      cssClass: 'button-notification',
-      animation: { type: 'fade', duration: 200 },
-      position: { horizontal: 'center', vertical: 'bottom' },
-      type: { style: 'success', icon: true },
-      hideAfter: this.hideAfter
-    });
-  }
-}
+      } else {
+        this.notificationService.show({
+          content: 'this product is added before, please add another one',
+          cssClass: 'button-notification',
+          animation: { type: 'fade', duration: 200 },
+          position: { horizontal: 'center', vertical: 'bottom' },
+          type: { style: 'success', icon: true },
+          hideAfter: this.hideAfter
+        });
+      }
+    }
 
 
     // if (ev.selected) {
@@ -233,15 +237,17 @@ if(selectedRow != null){
   }
 
   public oldQauntity = []
+
   public cellCloseHandler(args: any) {
-    debugger
+
     const { formGroup, dataItem } = args;
-console.log(this.mySelection);
+
     let oldQTY: number;
     this.mySelection.map((e => {
-      e.quantityForSale 
-      if (e.id === dataItem.id){
-         e.quantityForSale=1;
+      // e.quantityForSale
+      if (e.id === dataItem.id) {
+        if (Number(e.quantityForSale) < 2)
+          e.quantityForSale = 1;
         oldQTY = e.quantity;
       }
     }))
@@ -258,6 +264,8 @@ console.log(this.mySelection);
         closable: true
       });
       return
+    } else {
+      this.calculatedPrice = Number(newQTY * dataItem.priceForPicese);
     }
 
     if (!formGroup.valid) {
@@ -267,22 +275,13 @@ console.log(this.mySelection);
 
       this.mySelection.map((pro: any) => {
         if (pro.id === dataItem.id)
-          pro.quantityForSale = formGroup.value.quantityForSale;
+          pro.quantityForSale = Number(formGroup.value.quantityForSale);
       })
 
     }
   }
 
-  public removeHandler( dataItem ) {
-
-    // this.mySelection.map((product: any) => {
-    //   if (product.id === dataItem.id) {
-
-    //     let index = this.mySelection.indexOf(dataItem);
-
-    //     this.mySelection.splice(index, 1);
-    //   }
-    // })
+  public removeHandler(dataItem) {
 
     let index = this.mySelection.indexOf(dataItem);
 
@@ -291,7 +290,6 @@ console.log(this.mySelection);
     if ((this.mySelection.length) == 0) {
       this.idisabled = true;
     }
-
 
   }
 

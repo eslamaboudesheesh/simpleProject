@@ -133,7 +133,7 @@
     <kendo-grid-column field="priceTotal" title="total Pricecustom" [filterable]="false" width="100"
       [style]="{'background-color': '#888','color': '#fff'}">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
-        <span>{{dataItem.quantity * dataItem.priceForPicese}} LE</span>
+        <span>{{calculatedPrice}} LE</span>
       </ng-template>
     </kendo-grid-column>
 
