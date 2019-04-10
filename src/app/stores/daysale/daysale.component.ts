@@ -76,7 +76,8 @@ export class DaysaleComponent implements OnInit, OnDestroy {
         });
 
         cloneSelectedProduct.quantityForSale = 1
-        this.calculatedPrice = Number(cloneSelectedProduct.priceForPicese * 1);
+        cloneSelectedProduct.priceTotal = ( cloneSelectedProduct.quantityForSale * cloneSelectedProduct.priceForPicese) + " LE";
+        // this.calculatedPrice = Number(cloneSelectedProduct.priceForPicese * 1);
         this.mySelection.push(cloneSelectedProduct);
 
         this.gridData.data = this.gridData.data.filter(obj => {
@@ -265,20 +266,34 @@ export class DaysaleComponent implements OnInit, OnDestroy {
       });
       return
     } else {
-      this.calculatedPrice = Number(newQTY * dataItem.priceForPicese);
-    }
 
+      this.mySelection.map((pro: any) => {
+        if (pro.id === dataItem.id){
+          pro.quantityForSale = Number(formGroup.value.quantityForSale);
+          // this.calculatedPrice = Number(newQTY * dataItem.priceForPicese);
+          pro.priceTotal = (pro.quantityForSale * dataItem.priceForPicese) + " LE";
+        }
+      })
+    //   this.mySelection.map((e )=> {
+    //     if (e.id === dataItem.id) {
+          
+    //     }
+    // });
+  }
     if (!formGroup.valid) {
       // prevent closing the edited cell if there are invalid values.
       args.preventDefault();
-    } else if (formGroup.dirty) {
+    } 
+    // else if (formGroup.dirty) {
 
-      this.mySelection.map((pro: any) => {
-        if (pro.id === dataItem.id)
-          pro.quantityForSale = Number(formGroup.value.quantityForSale);
-      })
+    //   this.mySelection.map((pro: any) => {
+    //     if (pro.id === dataItem.id)
+    //       pro.quantityForSale = Number(formGroup.value.quantityForSale);
+    //       this.calculatedPrice = Number(newQTY * dataItem.priceForPicese);
+    //       pro.priceTotal = this.calculatedPrice;
+    //   })
 
-    }
+    // }
   }
 
   public removeHandler(dataItem) {

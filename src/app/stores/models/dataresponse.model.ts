@@ -8,5 +8,5 @@ export class DataResponse {
   public hint: any;
   public id: number;
   public name: any;
-  public priceTotal?: number;
+  public priceTotal?: number = 0;
 }
