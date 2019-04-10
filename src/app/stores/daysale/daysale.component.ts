@@ -54,62 +54,61 @@ export class DaysaleComponent implements OnInit, OnDestroy {
       this.searchsubs.unsubscribe();
   }
 
-  public onSelectedRowChange(ev: SelectionEvent) {
+  public onSelectedRowChange(selectedRow: any) {
 
-    let productsList: any = [];
+    let cloneSelectedProduct: any;
 
-    if (ev.selected) {
+if(selectedRow != null){
 
-      productsList = classToClass(ev.selectedRows);
+  cloneSelectedProduct = classToClass(selectedRow);
 
-      productsList.forEach(element => {
+  if (!this.mySelection.some((item: any) => item.id === cloneSelectedProduct.id)) {
 
-        element.dataItem.quantity = 1;
+    this.notificationService.show({
+      content: 'this product is added successfully',
+      cssClass: 'button-notification',
+      animation: { type: 'fade', duration: 200 },
+      position: { horizontal: 'center', vertical: 'bottom' },
+      type: { style: 'success', icon: true },
+      hideAfter: this.hideAfter
+    });
 
-        if (!this.mySelection.some((item: any) => item.id === ev.selectedRows[0].dataItem.id)) {
+    this.mySelection.push(cloneSelectedProduct);
 
-          this.notificationService.show({
-            content: 'this product is added successfully',
-            cssClass: 'button-notification',
-            animation: { type: 'fade', duration: 200 },
-            position: { horizontal: 'center', vertical: 'bottom' },
-            type: { style: 'success', icon: true },
-            hideAfter: this.hideAfter
-          });
-
-          this.mySelection.push(element.dataItem);
-
-
+    this.gridData.data = this.gridData.data.filter(obj => {
+      return obj.id != cloneSelectedProduct.id
+     });
 
 
-        } else {
-          this.notificationService.show({
-            content: 'this product is added before, please add another one',
-            cssClass: 'button-notification',
-            animation: { type: 'fade', duration: 200 },
-            position: { horizontal: 'center', vertical: 'bottom' },
-            type: { style: 'success', icon: true },
-            hideAfter: this.hideAfter
-          });
-        }
+  } else {
+    this.notificationService.show({
+      content: 'this product is added before, please add another one',
+      cssClass: 'button-notification',
+      animation: { type: 'fade', duration: 200 },
+      position: { horizontal: 'center', vertical: 'bottom' },
+      type: { style: 'success', icon: true },
+      hideAfter: this.hideAfter
+    });
+  }
+}
 
-      });
 
-    }
-    else {
+    // if (ev.selected) {
+    // }
+    // else {
 
-      this.notificationService.show({
-        content: 'this product is deleted successfully',
-        cssClass: 'button-notification',
-        animation: { type: 'fade', duration: 200 },
-        position: { horizontal: 'center', vertical: 'bottom' },
-        type: { style: 'success', icon: true },
-        hideAfter: this.hideAfter
-      });
+    //   this.notificationService.show({
+    //     content: 'this product is deleted successfully',
+    //     cssClass: 'button-notification',
+    //     animation: { type: 'fade', duration: 200 },
+    //     position: { horizontal: 'center', vertical: 'bottom' },
+    //     type: { style: 'success', icon: true },
+    //     hideAfter: this.hideAfter
+    //   });
 
-      this.mySelection.splice(this.mySelection.indexOf(ev.deselectedRows[0].dataItem), 1);
+    //   this.mySelection.splice(this.mySelection.indexOf(ev.deselectedRows[0].dataItem), 1);
 
-    }
+    // }
 
     if ((this.gridData.data.length) === 0) {
       this.showTableSearch = false;
@@ -233,23 +232,21 @@ export class DaysaleComponent implements OnInit, OnDestroy {
     sender.editCell(rowIndex, columnIndex, this.createFormGroup(dataItem));
   }
 
-  public xxdata = []
+  public oldQauntity = []
   public cellCloseHandler(args: any) {
     debugger
     const { formGroup, dataItem } = args;
-
+console.log(this.mySelection);
     let oldQTY: number;
-console.log(this.xxdata);
-this.xxdata.push(this.gridData.data);
-   this.xxdata.map((element => {
-     element.map((e)=>{
-      if (e.id === e.id)
-      oldQTY = e.quantity;
-     })
-     
+    this.mySelection.map((e => {
+      e.quantityForSale 
+      if (e.id === dataItem.id){
+         e.quantityForSale=1;
+        oldQTY = e.quantity;
+      }
     }))
 
-    let newQTY = formGroup.value.quantity;
+    let newQTY = formGroup.value.quantityForSale;
 
     if (newQTY > oldQTY) {
       this.notificationService.show({
@@ -270,22 +267,26 @@ this.xxdata.push(this.gridData.data);
 
       this.mySelection.map((pro: any) => {
         if (pro.id === dataItem.id)
-          pro.quantity = formGroup.value.quantity;
+          pro.quantityForSale = formGroup.value.quantityForSale;
       })
 
     }
   }
 
-  public removeHandler({ sender, dataItem }) {
+  public removeHandler( dataItem ) {
 
-    this.mySelection.map((product: any) => {
-      if (product.id === dataItem.id) {
+    // this.mySelection.map((product: any) => {
+    //   if (product.id === dataItem.id) {
 
-        let index = this.mySelection.indexOf(product);
+    //     let index = this.mySelection.indexOf(dataItem);
 
-        this.mySelection.splice(index, 1);
-      }
-    })
+    //     this.mySelection.splice(index, 1);
+    //   }
+    // })
+
+    let index = this.mySelection.indexOf(dataItem);
+
+    this.mySelection.splice(index, 1);
 
     if ((this.mySelection.length) == 0) {
       this.idisabled = true;
@@ -295,9 +296,9 @@ this.xxdata.push(this.gridData.data);
   }
 
   public createFormGroup(dataItem: any): FormGroup {
-   
+
     return this.formBuilder.group({
-      'quantity': [dataItem.quantity, Validators.compose([Validators.required, Validators.pattern('^[0-9]{1,3}')])]
+      'quantityForSale': [dataItem.quantityForSale, Validators.compose([Validators.required, Validators.pattern('^[0-9]{1,3}')])]
     });
   }
 

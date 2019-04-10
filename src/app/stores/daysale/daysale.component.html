@@ -20,8 +20,17 @@
     X</button>
 
   <kendo-grid [data]="gridData" [pageSize]="state.take" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
-    [sortable]="true" [pageable]="true" [filterable]="true" [selectable]="true"
-    (dataStateChange)="dataStateChange($event)" (selectionChange)="onSelectedRowChange($event)">
+    [sortable]="true" [pageable]="true" [filterable]="true" [selectable]="false"
+    (dataStateChange)="dataStateChange($event)" >
+
+    <kendo-grid-command-column title=" " width="40">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex" let-isNew="isNew">
+          <button  class="btn btn-success"  (click)="onSelectedRowChange(dataItem)"
+            style="  width: 25px;  padding: 0; margin-left: -5px;" >+</button>
+        </ng-template>
+      </kendo-grid-command-column>
+
+
 
     <!-- <kendo-grid-checkbox-column showSelectAll="true" width="40"></kendo-grid-checkbox-column> -->
 
@@ -91,8 +100,8 @@
     (cellClose)="cellCloseHandler($event)" (remove)="removeHandler($event)" [navigable]="true">
 
     <kendo-grid-command-column title=" " width="40">
-      <ng-template kendoGridCellTemplate let-isNew="isNew">
-        <button kendoGridRemoveCommand class="btn btn-danger"
+      <ng-template kendoGridCellTemplate let-dataItem let-isNew="isNew">
+        <button class="btn btn-danger" (click)="removeHandler(dataItem)"
           style="  width: 25px;  padding: 0; margin-left: -5px;">x</button>
       </ng-template>
     </kendo-grid-command-column>
@@ -106,21 +115,15 @@
     </kendo-grid-column>
     <kendo-grid-column field="hint" title="productDescription" width="180" [filterable]="false">
     </kendo-grid-column>
+    <kendo-grid-column field="quantityForSale" title="quantityForSale" width="100" filter="date" format="{0:d}" [filterable]="false"
+      [sortable]="true">
+    </kendo-grid-column>
+    
     <kendo-grid-column field="quantity" title="quantity" width="100" filter="date" format="{0:d}" [filterable]="false"
       [sortable]="true">
     </kendo-grid-column>
-    <kendo-grid-column field="TradePricePicese" title="TradePricePicese" width="120" filter="numeric" format="{0:c}"
-      [filterable]="false">
-      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
-        <span>{{ dataItem.TradePricePicese}} LE</span>
-      </ng-template>
-    </kendo-grid-column>
-    <kendo-grid-column field="TradepriceTotal" title="total tradePrice" width="180" [filterable]="false"
-      [style]="{'background-color': '#888','color': '#fff'}">
-      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
-        <span>{{dataItem.quantity * dataItem.TradePricePicese}} LE</span>
-      </ng-template>
-    </kendo-grid-column>
+
+
     <kendo-grid-column field="priceForPicese" title="price for pices" width="120" filter="numeric" format="{0:c}"
       [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
